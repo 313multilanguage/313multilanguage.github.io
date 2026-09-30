@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>TikTok sign-in — 313 Multilanguage</title>
+<link rel="icon" href="logo.jpg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header style="padding-top:34px">
+  <img class="logo" style="margin-top:0" src="logo.jpg" alt="313 Multilanguage logo">
+  <h1><b>313</b> MULTILANGUAGE</h1>
+  <div class="tag">TIKTOK SIGN-IN</div>
+</header>
+<main>
+  <section>
+    <h2 id="title">Sign-in finished</h2>
+    <p id="msg">This page only shows the one-time code TikTok sent back, so the channel owner can give it to the publishing tool. Nothing is stored or sent anywhere by this page.</p>
+    <p style="margin-top:14px"><b>Code:</b></p>
+    <p id="code" style="word-break:break-all;font-family:Consolas,monospace;background:rgba(242,193,78,.12);border:1px solid rgba(242,193,78,.4);border-radius:8px;padding:12px;margin-top:6px">—</p>
+    <button id="copy" style="margin-top:12px;padding:10px 22px;border-radius:8px;border:0;background:#f2c14e;color:#0a1a3d;font-weight:700;cursor:pointer">Copy code</button>
+  </section>
+</main>
+<script>
+  var q = new URLSearchParams(location.search);
+  var code = q.get("code"), err = q.get("error");
+  if (err) { document.getElementById("title").textContent = "Sign-in was not completed"; document.getElementById("code").textContent = err + ": " + (q.get("error_description") || ""); }
+  else if (code) { document.getElementById("code").textContent = code; }
+  else { document.getElementById("msg").textContent = "No code in the address. This page is only used right after signing in to TikTok."; }
+  document.getElementById("copy").onclick = function () { navigator.clipboard.writeText(document.getElementById("code").textContent); this.textContent = "Copied"; };
+</script>
+</body>
+</html>
