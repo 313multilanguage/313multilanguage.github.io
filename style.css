@@ -1,0 +1,31 @@
+:root { --navy: #0a1a3d; --deep: #04081a; --gold: #f2c14e; --gold2: #d9a93a; --text: #f4f7fb; --muted: #b9c6dc; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--deep); }
+body { font-family: "Segoe UI", Tahoma, Arial, sans-serif; color: var(--text); line-height: 1.7;
+  background: radial-gradient(1200px 700px at 50% 0%, #10306a 0%, var(--navy) 45%, var(--deep) 100%) no-repeat var(--deep); min-height: 100vh; }
+a { color: var(--gold); }
+header { text-align: center; padding: 0 16px 28px; }
+.banner { display: block; width: 100%; max-height: 420px; object-fit: cover; }
+.logo { width: 150px; height: 150px; border-radius: 50%; margin-top: -75px; position: relative;
+  box-shadow: 0 0 0 5px var(--gold2), 0 0 50px rgba(242, 193, 78, .45); }
+h1 { font-size: 2.1rem; letter-spacing: 2px; margin-top: 14px; }
+h1 b { color: var(--gold); }
+.tag { color: var(--gold); letter-spacing: 5px; font-size: .95rem; font-weight: 600; }
+nav { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 18px; }
+nav a { text-decoration: none; padding: 8px 18px; border: 1px solid rgba(242, 193, 78, .5); border-radius: 8px; font-weight: 600; }
+nav a:hover, nav a.on { background: var(--gold); color: var(--navy); }
+main { max-width: 880px; margin: 0 auto; padding: 8px 18px 60px; }
+section { background: rgba(2, 6, 18, .62); border: 1px solid rgba(242, 193, 78, .25); border-radius: 14px; padding: 24px 26px; margin-top: 22px; }
+h2 { color: var(--gold); font-size: 1.35rem; margin-bottom: 10px; }
+h3 { font-size: 1.05rem; margin: 16px 0 4px; color: #fff; }
+p, li { color: var(--text); }
+ul { padding-inline-start: 22px; margin: 6px 0; }
+.fa { direction: rtl; text-align: right; font-size: 1.05rem; }
+.links { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-top: 12px; }
+.links a { display: block; text-align: center; text-decoration: none; padding: 14px 10px; border-radius: 10px;
+  background: rgba(242, 193, 78, .10); border: 1px solid rgba(242, 193, 78, .4); font-weight: 700; }
+.links a small { display: block; color: var(--muted); font-weight: 500; }
+.links a:hover { background: var(--gold); color: var(--navy); }
+.links a:hover small { color: var(--navy); }
+.muted { color: var(--muted); font-size: .92rem; }
+footer { text-align: center; color: var(--muted); padding: 0 16px 40px; font-size: .9rem; }
