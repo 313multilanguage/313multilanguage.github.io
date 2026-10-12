@@ -116,6 +116,9 @@
 <h2>Mots essentiels <span class="fa-label">کلمات پایه — فرانسوی و معنی فارسی</span></h2>
 <div class="words" id="words"></div>
 
+<h2>Nombres 1 – 100 <span class="fa-label">اعداد ۱ تا ۱۰۰</span></h2>
+<div class="grid alpha" id="numbers"></div>
+
 <footer>313 Multilanguage · Fait avec ❤</footer>
 
 <div class="bar">
@@ -263,6 +266,19 @@
     row.appendChild(frBtn);
     wordBox.appendChild(row);
   });
+
+  // ---- build: numbers 1..100 ----
+  var numBox = document.getElementById("numbers");
+  for(var n=1; n<=100; n++){
+    (function(i){
+      var id = "n" + String(i).padStart(3,"0");
+      var d = document.createElement("div");
+      d.className = "tile";
+      d.innerHTML = '<span class="big">'+i+'</span>';
+      d.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+id+".mp3", d); });
+      numBox.appendChild(d);
+    })(n);
+  }
 
   // ---- speed selector ----
   var speeds = document.getElementById("speeds");

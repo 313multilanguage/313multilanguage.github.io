@@ -89,6 +89,8 @@ async def main():
     for wid, fr, _ in WORDS: await tts(fr, FR_VOICE, OUT/"fr"/f"{wid}.mp3")
     print("» کلمات (فارسی — معنی)…")
     for wid, _, fa in WORDS: await tts(fa, FA_VOICE, OUT/"fa"/f"{wid}.mp3")
+    print("» اعداد ۱ تا ۱۰۰ (فرانسوی)…")
+    for i in range(1, 101): await tts(str(i), FR_VOICE, OUT/"fr"/f"n{i:03d}.mp3")
     print(f"\nساخته: {made} | رد(قبلاً بود): {skipped} | ناموفق: {failed}")
     print(f"خروجی: {OUT.resolve()}")
 
