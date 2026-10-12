@@ -11,10 +11,11 @@
 - `audio/fr/*.mp3` — تلفظ فرانسوی (حروف، حروف ویژه، کلمات).
 - `audio/fa/*.mp3` — معنی فارسی کلمات.
 
-## ساختِ صداها (یک‌بار)
-۱. `python -m pip install openai`
-۲. کلید OpenAI را در `generate_voices.py` (متغیر `API_KEY`) یا در محیط `OPENAI_API_KEY` بگذار.
-۳. `python generate_voices.py`  → پوشه‌ی `audio/` ساخته می‌شود.
-۴. پوشه‌ی `audio/` را به این ریپو (زیر `french/`) پوش کن.
+## ساختِ صداها (یک‌بار) — رایگان با edge-tts
+۱. `python -m pip install edge-tts`
+۲. `python generate_voices.py`  → پوشه‌ی `audio/` ساخته می‌شود (بدون کلید، بدون هزینه).
+۳. پوشه‌ی `audio/` را به این ریپو (زیر `french/`) پوش کن.
+
+صداها: فرانسوی `fr-FR-DeniseNeural`، فارسی `fa-IR-DilaraNeural` (در بالای اسکریپت قابل تغییر).
 
 نام فایل‌ها در اسکریپت و در `index.html` باید یکی بماند (A.mp3…Z.mp3، s01…s15، w01…w20).

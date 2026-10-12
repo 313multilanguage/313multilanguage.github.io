@@ -1,37 +1,29 @@
 # -*- coding: utf-8 -*-
 # ============================================================
-#  ساختِ فایل‌های صوتی برای اپِ یادگیری فرانسوی  (OpenAI TTS)
-#  این را روی ویندوزِ خودتان اجرا کنید (فقط آن‌جا به OpenAI دسترسی هست).
+#  ساختِ فایل‌های صوتی برای اپِ یادگیری فرانسوی
+#  با صدای نورالِ رایگانِ مایکروسافت (edge-tts) — بدون کلید، بدون هزینه.
 # ------------------------------------------------------------
-#   ۱) نصب (یک‌بار):      python -m pip install openai
-#   ۲) کلید را بگذارید:   یا در API_KEY پایین، یا به‌صورت متغیر محیطی OPENAI_API_KEY
-#   ۳) اجرا:              python generate_voices.py
-#   ۴) خروجی در پوشه‌ی  audio/  ساخته می‌شود (audio/fr و audio/fa).
+#   ۱) نصب (یک‌بار):   python -m pip install edge-tts
+#   ۲) اجرا:           python generate_voices.py
+#   ۳) خروجی در پوشه‌ی  audio/  ساخته می‌شود (audio/fr و audio/fa).
 #
-#   نکته: اسکریپت هوشمند است؛ فایلی که قبلاً ساخته شده را دوباره نمی‌سازد.
-#   این فایل را هرگز با کلیدِ داخلش روی گیت‌هاب پوش نکنید.
+#   نیازی به اینترنتِ خاص یا کلید نیست — فقط اتصالِ معمولیِ اینترنت.
+#   اسکریپت هوشمند است؛ فایلی که قبلاً ساخته شده را دوباره نمی‌سازد،
+#   پس اگر وسطش قطع شد، دوباره اجرا کن تا بقیه را بسازد.
 # ============================================================
-import os, sys, time
+import asyncio, sys
 from pathlib import Path
 
 try:
-    from openai import OpenAI
+    import edge_tts
 except ImportError:
-    print("اول:  python -m pip install openai"); sys.exit(1)
+    print("اول این را اجرا کن:   python -m pip install edge-tts"); sys.exit(1)
 
-# ---------- تنظیمات ----------
-API_KEY = ""                 # کلید OpenAI (یا خالی بگذارید تا از OPENAI_API_KEY خوانده شود)
-MODEL   = "gpt-4o-mini-tts"  # اگر نبود: "tts-1"
-VOICE   = "alloy"            # گزینه‌ها: nova, shimmer, fable, onyx, echo ...
-OUT     = Path("audio")
-# -----------------------------
-
-client = OpenAI(api_key=(API_KEY or os.environ.get("OPENAI_API_KEY", "")))
-
-FR_INSTR = ("Speak clear, natural, calm French like a patient teacher for an "
-            "absolute beginner. Pronounce each sound precisely.")
-FA_INSTR = ("به فارسیِ روان، واضح و آرام صحبت کن، مثل یک معلمِ مهربان برای یک "
-            "فرد مسن که تازه شروع کرده. شمرده و دوستانه.")
+# ---------- صداها (می‌توانی عوض کنی) ----------
+FR_VOICE = "fr-FR-DeniseNeural"   # فرانسویِ زنانه و واضح. مردانه: fr-FR-HenriNeural
+FA_VOICE = "fa-IR-DilaraNeural"   # فارسیِ زنانه و واضح.   مردانه: fa-IR-FaridNeural
+OUT      = Path("audio")
+# ---------------------------------------------
 
 LETTERS = [
     ("A","a"),("B","bé"),("C","cé"),("D","dé"),("E","euh"),("F","èf"),
@@ -69,7 +61,8 @@ WORDS = [
 ]
 
 made = skipped = failed = 0
-def tts(text, instr, path):
+
+async def tts(text, voice, path):
     global made, skipped, failed
     path = Path(path)
     if path.exists() and path.stat().st_size > 0:
@@ -77,30 +70,30 @@ def tts(text, instr, path):
     path.parent.mkdir(parents=True, exist_ok=True)
     for attempt in (1, 2):
         try:
-            with client.audio.speech.with_streaming_response.create(
-                model=MODEL, voice=VOICE, input=text,
-                instructions=instr, response_format="mp3") as r:
-                r.stream_to_file(path)
-            made += 1; print("  OK", path); time.sleep(0.2); return
+            await edge_tts.Communicate(text, voice).save(str(path))
+            if path.exists() and path.stat().st_size > 0:
+                made += 1; print("  OK", path); return
+            raise RuntimeError("empty file")
         except Exception as e:
             if attempt == 1:
-                print("  retry", path, e); time.sleep(1.5)
+                print("  retry", path, e); await asyncio.sleep(2)
             else:
                 failed += 1; print("  FAIL", path, e)
 
-def main():
-    if not (API_KEY or os.environ.get("OPENAI_API_KEY")):
-        print("کلید OpenAI را در API_KEY یا در متغیر محیطی OPENAI_API_KEY بگذارید."); sys.exit(1)
+async def main():
     print("» الفبا (فرانسوی)…")
-    for L, say in LETTERS: tts(say, FR_INSTR, OUT/"fr"/f"{L}.mp3")
+    for L, say in LETTERS: await tts(say, FR_VOICE, OUT/"fr"/f"{L}.mp3")
     print("» حروف ویژه (فرانسوی)…")
-    for sid, w in SPECIALS: tts(w, FR_INSTR, OUT/"fr"/f"{sid}.mp3")
+    for sid, w in SPECIALS: await tts(w, FR_VOICE, OUT/"fr"/f"{sid}.mp3")
     print("» کلمات (فرانسوی)…")
-    for wid, fr, _ in WORDS: tts(fr, FR_INSTR, OUT/"fr"/f"{wid}.mp3")
+    for wid, fr, _ in WORDS: await tts(fr, FR_VOICE, OUT/"fr"/f"{wid}.mp3")
     print("» کلمات (فارسی — معنی)…")
-    for wid, _, fa in WORDS: tts(fa, FA_INSTR, OUT/"fa"/f"{wid}.mp3")
+    for wid, _, fa in WORDS: await tts(fa, FA_VOICE, OUT/"fa"/f"{wid}.mp3")
     print(f"\nساخته: {made} | رد(قبلاً بود): {skipped} | ناموفق: {failed}")
     print(f"خروجی: {OUT.resolve()}")
 
 if __name__ == "__main__":
-    main()
+    if sys.platform.startswith("win"):
+        try: asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        except Exception: pass
+    asyncio.run(main())
