@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0b2a6b">
+<title>Apprendre le français · یادگیری فرانسوی</title>
+<style>
+  :root{
+    --bleu:#0b2a6b; --bleu2:#1b4fb8; --rouge:#d7263d;
+    --cream:#fbf7ef; --card:#ffffff; --ink:#132036; --muted:#6a7488;
+    --ring:#1b4fb8; --ok:#1f9d6b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Segoe UI",Tahoma,system-ui,-apple-system,sans-serif;
+    background:linear-gradient(180deg,#eef2fb 0%,var(--cream) 100%);
+    color:var(--ink); min-height:100vh;
+    padding:16px 14px 140px; max-width:760px;margin:0 auto;
+  }
+  header{text-align:center;padding:14px 6px 8px;}
+  header h1{
+    margin:0;font-size:1.55rem;line-height:1.2;
+    background:linear-gradient(90deg,var(--bleu),var(--rouge));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    font-weight:800;letter-spacing:.3px;
+  }
+  .sub{margin:6px 0 0;font-size:.95rem;color:var(--muted);}
+  .fa{direction:rtl;font-size:1.02rem;color:#3a4a66;margin-top:12px;line-height:1.9;
+     background:#fff;border:1px solid #e7ecf6;border-radius:14px;padding:14px 16px;}
+  .fa b{color:var(--bleu);}
+  h2{display:flex;align-items:center;gap:10px;font-size:1.1rem;margin:28px 2px 14px;color:var(--bleu);}
+  h2 .fa-label{direction:rtl;color:var(--muted);font-weight:500;font-size:.92rem;}
+  h2::before{content:"";width:8px;height:24px;border-radius:4px;background:linear-gradient(var(--bleu),var(--rouge));}
+
+  .grid{display:grid;gap:10px;}
+  .alpha{grid-template-columns:repeat(auto-fill,minmax(66px,1fr));}
+  .accents{grid-template-columns:repeat(auto-fill,minmax(72px,1fr));}
+
+  .tile{
+    background:var(--card);border:1px solid #e7ecf6;border-radius:16px;
+    padding:14px 6px 11px;text-align:center;cursor:pointer;user-select:none;
+    box-shadow:0 2px 6px rgba(18,32,54,.05);
+    transition:transform .08s,box-shadow .15s,border-color .15s;
+    display:flex;flex-direction:column;align-items:center;gap:5px;min-height:72px;justify-content:center;
+  }
+  .tile .big{font-size:2rem;font-weight:800;line-height:1;color:var(--ink);}
+  .tile .say{font-size:.74rem;color:var(--muted);letter-spacing:.2px;}
+  .tile:active{transform:scale(.93);}
+  .tile.playing{border-color:var(--ring);box-shadow:0 0 0 3px rgba(27,79,184,.18);}
+  .tile.playing .big{color:var(--bleu2);}
+  .tile.err{border-color:#ffd9a8;background:#fff8ef;}
+
+  .words{display:grid;gap:12px;grid-template-columns:1fr;}
+  .word{
+    background:var(--card);border:1px solid #e7ecf6;border-radius:16px;
+    padding:12px 14px;display:flex;align-items:center;gap:10px;
+    box-shadow:0 2px 6px rgba(18,32,54,.05);
+  }
+  .word .fr{flex:1;min-width:0;font-size:1.22rem;font-weight:700;color:var(--ink);}
+  .btn{
+    flex:none;border:none;cursor:pointer;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;gap:6px;
+    padding:0 14px;height:48px;font-size:.95rem;font-weight:700;user-select:none;
+    transition:transform .08s,filter .15s;
+  }
+  .btn:active{transform:scale(.94);}
+  .btn.fr-btn{width:56px;background:linear-gradient(140deg,var(--bleu),var(--bleu2));color:#fff;}
+  .btn.fr-btn svg{width:20px;height:20px;fill:#fff;}
+  .btn.fa-btn{direction:rtl;background:#eef2fb;color:var(--bleu);border:1px solid #d8e1f4;}
+  .btn.fa-btn svg{width:18px;height:18px;fill:var(--bleu);}
+  .btn.playing{filter:brightness(1.1);box-shadow:0 0 0 3px rgba(27,79,184,.25);}
+
+  .bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:30;
+    background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
+    border-top:1px solid #e3e9f5;padding:12px 14px;
+  }
+  .bar-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:10px;direction:rtl;flex-wrap:wrap;}
+  .bar .lbl{color:var(--muted);font-size:.9rem;font-weight:600;}
+  .speeds{display:flex;gap:8px;}
+  .spd{
+    border:1px solid #d8e1f4;background:#eef2fb;color:var(--bleu);
+    border-radius:999px;padding:9px 16px;font-size:.98rem;font-weight:700;cursor:pointer;user-select:none;
+  }
+  .spd.on{background:var(--bleu);color:#fff;border-color:var(--bleu);}
+
+  .toast{
+    position:fixed;left:50%;transform:translateX(-50%);bottom:150px;z-index:40;
+    direction:rtl;background:#8a5a12;color:#fff;border-radius:12px;padding:10px 16px;
+    font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .25s;max-width:90%;text-align:center;
+  }
+  .toast.show{opacity:.96;}
+  footer{direction:rtl;text-align:center;color:var(--muted);font-size:.8rem;margin-top:30px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Apprendre le français 🇫🇷</h1>
+  <p class="sub">L'alphabet &amp; les mots essentiels</p>
+  <div class="fa">
+    <b>یادگیری الفبای فرانسوی با صدا</b><br>
+    روی هر حرف بزنید تا تلفظش را بشنوید. برای کلمه‌ها دکمه‌ی آبی <b>تلفظ فرانسوی</b> و دکمه‌ی روشن <b>معنی فارسی</b> را می‌شنوانَد.
+    سرعتِ صدا را از پایینِ صفحه روی <b>۱</b>، <b>۰٫۷</b> یا <b>۰٫۵</b> بگذارید.
+  </div>
+</header>
+
+<h2>A – Z <span class="fa-label">الفبای اصلی</span></h2>
+<div class="grid alpha" id="alpha"></div>
+
+<h2>Caractères spéciaux <span class="fa-label">حروف و نشانه‌های ویژه</span></h2>
+<div class="grid accents" id="accents"></div>
+
+<h2>Mots essentiels <span class="fa-label">کلمات پایه — فرانسوی و معنی فارسی</span></h2>
+<div class="words" id="words"></div>
+
+<footer>313 Multilanguage · Fait avec ❤</footer>
+
+<div class="bar">
+  <div class="bar-inner">
+    <span class="lbl">سرعتِ تلفظ:</span>
+    <div class="speeds" id="speeds">
+      <span class="spd on" data-rate="1">۱ (عادی)</span>
+      <span class="spd" data-rate="0.7">۰٫۷</span>
+      <span class="spd" data-rate="0.5">۰٫۵ (آهسته)</span>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // آدرس پایه‌ی صداها روی گیت‌هاب (GitHub Pages).
+  var AUDIO_BASE = "https://313multilanguage.github.io/french/audio";
+
+  // ---- data (باید دقیقاً با generate_voices.py یکی بماند) ----
+  var letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+
+  var accents = [
+    {ch:"É", id:"s01", ex:"été"},   {ch:"È", id:"s02", ex:"très"},
+    {ch:"Ê", id:"s03", ex:"être"},  {ch:"Ë", id:"s04", ex:"Noël"},
+    {ch:"À", id:"s05", ex:"voilà"}, {ch:"Â", id:"s06", ex:"âge"},
+    {ch:"Î", id:"s07", ex:"île"},   {ch:"Ï", id:"s08", ex:"maïs"},
+    {ch:"Ô", id:"s09", ex:"hôtel"}, {ch:"Ù", id:"s10", ex:"où"},
+    {ch:"Û", id:"s11", ex:"sûr"},   {ch:"Ü", id:"s12", ex:"aigüe"},
+    {ch:"Ç", id:"s13", ex:"ça"},    {ch:"Œ", id:"s14", ex:"cœur"},
+    {ch:"Æ", id:"s15", ex:"cætera"}
+  ];
+
+  var words = [
+    {id:"w01", fr:"Bonjour",         fa:"سلام / روز بخیر"},
+    {id:"w02", fr:"Salut",           fa:"سلام (خودمانی)"},
+    {id:"w03", fr:"Bonsoir",         fa:"عصر بخیر"},
+    {id:"w04", fr:"Bonne nuit",      fa:"شب بخیر (موقع خواب)"},
+    {id:"w05", fr:"Au revoir",       fa:"خداحافظ"},
+    {id:"w06", fr:"À bientôt",       fa:"به‌زودی می‌بینمت"},
+    {id:"w07", fr:"Merci",           fa:"تشکر"},
+    {id:"w08", fr:"Merci beaucoup",  fa:"خیلی ممنون"},
+    {id:"w09", fr:"De rien",         fa:"خواهش می‌کنم"},
+    {id:"w10", fr:"S'il vous plaît", fa:"لطفاً (رسمی)"},
+    {id:"w11", fr:"Oui",             fa:"بله"},
+    {id:"w12", fr:"Non",             fa:"نه"},
+    {id:"w13", fr:"Excusez-moi",     fa:"ببخشید"},
+    {id:"w14", fr:"Pardon",          fa:"ببخشید / عذر می‌خواهم"},
+    {id:"w15", fr:"Comment ça va ?", fa:"حالت چطور است؟"},
+    {id:"w16", fr:"Ça va bien",      fa:"خوبم"},
+    {id:"w17", fr:"Je m'appelle…",   fa:"اسم من ... است"},
+    {id:"w18", fr:"Enchanté",        fa:"از آشنایی خوشوقتم"},
+    {id:"w19", fr:"S'il te plaît",   fa:"لطفاً (خودمانی)"},
+    {id:"w20", fr:"À demain",        fa:"تا فردا"}
+  ];
+
+  // ---- audio engine ----
+  var rate = 1;
+  var audio = new Audio();
+  audio.preload = "none";
+  var currentEl = null;
+  var cache = {};
+
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2600);
+  }
+
+  function clearPlaying(){
+    if(currentEl){ currentEl.classList.remove("playing","err"); currentEl = null; }
+  }
+
+  function play(url, el){
+    try{ audio.pause(); }catch(e){}
+    clearPlaying();
+    currentEl = el;
+    if(el) el.classList.add("playing");
+    audio.src = url;
+    audio.playbackRate = rate;
+    if("preservesPitch" in audio) audio.preservesPitch = true;
+    if("mozPreservesPitch" in audio) audio.mozPreservesPitch = true;
+    if("webkitPreservesPitch" in audio) audio.webkitPreservesPitch = true;
+    var p = audio.play();
+    if(p && p.catch){ p.catch(function(){ /* ignored: handled by onerror */ }); }
+  }
+  audio.addEventListener("ended", clearPlaying);
+  audio.addEventListener("error", function(){
+    if(currentEl){ currentEl.classList.remove("playing"); currentEl.classList.add("err"); }
+    toast("صدا هنوز روی گیت‌هاب بارگذاری نشده (یا اینترنت وصل نیست).");
+    setTimeout(clearPlaying, 1200);
+  });
+
+  // ---- build: alphabet ----
+  var alphaBox = document.getElementById("alpha");
+  letters.forEach(function(L){
+    var d = document.createElement("div");
+    d.className = "tile";
+    d.innerHTML = '<span class="big">'+L+'</span>';
+    d.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+L+".mp3", d); });
+    alphaBox.appendChild(d);
+  });
+
+  // ---- build: accents ----
+  var accBox = document.getElementById("accents");
+  accents.forEach(function(a){
+    var d = document.createElement("div");
+    d.className = "tile";
+    d.innerHTML = '<span class="big">'+a.ch+'</span><span class="say">'+a.ex+'</span>';
+    d.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+a.id+".mp3", d); });
+    accBox.appendChild(d);
+  });
+
+  // ---- build: words ----
+  var playSvg = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+  var earSvg  = '<svg viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0-6 6 1.5 1.5 0 0 0 3 0 3 3 0 1 1 3 3c-1.7 0-3 1.3-3 3v1a1.5 1.5 0 0 0 3 0v-1c0-.2.8-.5 1.4-.8A6 6 0 0 0 12 3zm-1.5 15.5a1.5 1.5 0 1 0 3 0 1.5 1.5 0 0 0-3 0z"/></svg>';
+  var wordBox = document.getElementById("words");
+  words.forEach(function(w){
+    var row = document.createElement("div");
+    row.className = "word";
+
+    var label = document.createElement("span");
+    label.className = "fr";
+    label.textContent = w.fr;
+
+    var frBtn = document.createElement("button");
+    frBtn.className = "btn fr-btn";
+    frBtn.setAttribute("aria-label","تلفظ فرانسوی");
+    frBtn.innerHTML = playSvg;
+    frBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+w.id+".mp3", frBtn); });
+
+    var faBtn = document.createElement("button");
+    faBtn.className = "btn fa-btn";
+    faBtn.innerHTML = earSvg + '<span>معنی</span>';
+    faBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fa/"+w.id+".mp3", faBtn); });
+
+    row.appendChild(label);
+    row.appendChild(faBtn);
+    row.appendChild(frBtn);
+    wordBox.appendChild(row);
+  });
+
+  // ---- speed selector ----
+  var speeds = document.getElementById("speeds");
+  speeds.addEventListener("click", function(e){
+    var t = e.target.closest(".spd");
+    if(!t) return;
+    rate = parseFloat(t.getAttribute("data-rate"));
+    [].forEach.call(speeds.querySelectorAll(".spd"), function(s){ s.classList.remove("on"); });
+    t.classList.add("on");
+    audio.playbackRate = rate;
+  });
+})();
+</script>
+</body>
+</html>
