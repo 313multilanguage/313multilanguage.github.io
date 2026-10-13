@@ -70,6 +70,10 @@
   .btn.fr-btn svg{width:20px;height:20px;fill:#fff;}
   .btn.fr-btn.emo{width:50px;}
   .btn.fr-btn.emo span{font-size:1.35rem;line-height:1;}
+  .emo-m{color:var(--bleu2);font-weight:800;}
+  .emo-f{color:#c2185b;font-weight:800;}
+  .emo-one{font-weight:800;color:var(--ink);}
+  .word .fr .emo-sep{color:var(--muted);font-weight:500;margin:0 4px;}
   .btn.fa-btn{direction:rtl;background:#eef2fb;color:var(--bleu);border:1px solid #d8e1f4;}
   .btn.fa-btn svg{width:18px;height:18px;fill:var(--bleu);}
   .btn.playing{filter:brightness(1.1);box-shadow:0 0 0 3px rgba(27,79,184,.25);}
@@ -287,24 +291,34 @@
 
   // ---- build: emotions ----
   var emotions = [
-    {id:"e01", disp:"content / contente",     fa:"خوشحال",            g:true},
-    {id:"e02", disp:"heureux / heureuse",     fa:"خوشحال و خوشبخت",   g:true},
-    {id:"e03", disp:"amoureux / amoureuse",   fa:"عاشق",              g:true},
-    {id:"e04", disp:"malade",                 fa:"مریض",              g:false},
-    {id:"e05", disp:"fatigué / fatiguée",     fa:"خسته",              g:true},
-    {id:"e06", disp:"rigolo / rigolote",      fa:"بامزه / شوخ",       g:true},
-    {id:"e07", disp:"triste",                 fa:"ناراحت / غمگین",    g:false},
-    {id:"e08", disp:"inquiet / inquiète",     fa:"نگران",             g:true},
-    {id:"e09", disp:"fâché / fâchée",         fa:"عصبانی",            g:true},
-    {id:"e10", disp:"j'ai peur",              fa:"می‌ترسم",           g:false}
+    {id:"e01", pre:"Je suis ", m:"content",   f:"contente",  fa:"خوشحال"},
+    {id:"e02", pre:"Je suis ", m:"heureux",   f:"heureuse",  fa:"خوشحال و خوشبخت"},
+    {id:"e03", pre:"Je suis ", m:"amoureux",  f:"amoureuse", fa:"عاشق"},
+    {id:"e04", pre:"Je suis ", m:"malade",    f:null,        fa:"مریض"},
+    {id:"e05", pre:"Je suis ", m:"fatigué",   f:"fatiguée",  fa:"خسته"},
+    {id:"e06", pre:"Je suis ", m:"rigolo",    f:"rigolote",  fa:"بامزه / شوخ"},
+    {id:"e07", pre:"Je suis ", m:"triste",    f:null,        fa:"ناراحت / غمگین"},
+    {id:"e08", pre:"Je suis ", m:"inquiet",   f:"inquiète",  fa:"نگران"},
+    {id:"e09", pre:"Je suis ", m:"fâché",     f:"fâchée",    fa:"عصبانی"},
+    {id:"e10", pre:"",         m:"J'ai peur", f:null,        fa:"می‌ترسم"}
   ];
   var emoBox = document.getElementById("emotions");
   emotions.forEach(function(e){
+    var g = (e.f !== null);
     var row = document.createElement("div");
     row.className = "word";
     var left = document.createElement("span");
     left.className = "left";
-    left.innerHTML = '<span class="fr">'+e.disp+'</span><span class="fa-m">'+e.fa+'</span>';
+    var phrase;
+    if(g){
+      phrase = e.pre
+        + '<span class="emo-m">'+e.m+'</span>'
+        + '<span class="emo-sep">/</span>'
+        + '<span class="emo-f">'+e.f+'</span>';
+    } else {
+      phrase = e.pre + '<span class="emo-one">'+e.m+'</span>';
+    }
+    left.innerHTML = '<span class="fr">'+phrase+'</span><span class="fa-m">'+e.fa+'</span>';
     row.appendChild(left);
 
     var faBtn = document.createElement("button");
@@ -313,7 +327,7 @@
     faBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fa/"+e.id+".mp3", faBtn); });
     row.appendChild(faBtn);
 
-    if(e.g){
+    if(g){
       var wBtn = document.createElement("button");
       wBtn.className = "btn fr-btn emo";
       wBtn.setAttribute("aria-label","زن");
