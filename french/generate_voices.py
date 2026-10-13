@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 # ============================================================
-#  ساختِ فایل‌های صوتی برای اپِ یادگیری فرانسوی
-#  با صدای نورالِ رایگانِ مایکروسافت (edge-tts) — بدون کلید، بدون هزینه.
+#  ساختِ فایل‌های صوتی برای اپِ یادگیری فرانسوی  (edge-tts، رایگان)
+#  نسخهٔ سوئیسی + احساسات.  برای مادرِ سوئیسیِ کاربر.
 # ------------------------------------------------------------
 #   ۱) نصب (یک‌بار):   python -m pip install edge-tts
 #   ۲) اجرا:           python generate_voices.py
-#   ۳) خروجی در پوشه‌ی  audio/  ساخته می‌شود (audio/fr و audio/fa).
+#   ۳) خروجی در پوشه‌ی  audio/  (audio/fr و audio/fa).
 #
-#   نیازی به اینترنتِ خاص یا کلید نیست — فقط اتصالِ معمولیِ اینترنت.
-#   اسکریپت هوشمند است؛ فایلی که قبلاً ساخته شده را دوباره نمی‌سازد،
-#   پس اگر وسطش قطع شد، دوباره اجرا کن تا بقیه را بسازد.
+#   توجه: صدای فرانسوی حالا سوئیسی است (fr-CH). اگر می‌خواهی کلِ
+#   فرانسوی دوباره با لهجهٔ سوئیسی ساخته شود، اول فایل‌های قدیمی
+#   را پاک کن:  Remove-Item audio\fr\*.mp3   سپس این اسکریپت را اجرا کن.
+#   (فایل‌های فارسی audio/fa دست‌نخورده می‌مانند؛ فقط احساساتِ فارسی اضافه می‌شود.)
 # ============================================================
 import asyncio, sys
 from pathlib import Path
@@ -19,11 +20,16 @@ try:
 except ImportError:
     print("اول این را اجرا کن:   python -m pip install edge-tts"); sys.exit(1)
 
-# ---------- صداها (می‌توانی عوض کنی) ----------
-FR_VOICE = "fr-FR-DeniseNeural"   # فرانسویِ زنانه و واضح. مردانه: fr-FR-HenriNeural
-FA_VOICE = "fa-IR-DilaraNeural"   # فارسیِ زنانه و واضح.   مردانه: fa-IR-FaridNeural
+# ---------- صداها ----------
+FR_VOICE = "fr-CH-ArianeNeural"   # فرانسویِ سوئیسیِ زنانه. مردانه: fr-CH-FabriceNeural | فرانسهٔ فرانسه: fr-FR-DeniseNeural
+FA_VOICE = "fa-IR-DilaraNeural"   # فارسیِ زنانه.          مردانه: fa-IR-FaridNeural
 OUT      = Path("audio")
-# ---------------------------------------------
+
+# عددِ ۸۰ در سوئیس بسته به کانتون فرق دارد — فردا بر اساس کانتونِ مادر نهایی شود:
+#   "huitante"      → وو، والیس، فریبور (۸۱ = huitante et un)
+#   "quatre-vingts" → ژنو، نوشاتل، ژورا (۸۱ = quatre-vingt-un)
+EIGHTY = "huitante"
+# ---------------------------
 
 LETTERS = [
     ("A","a"),("B","bé"),("C","cé"),("D","dé"),("E","euh"),("F","èf"),
@@ -60,6 +66,39 @@ WORDS = [
     ("w20","À demain",        "آ دومَن یعنی تا فردا"),
 ]
 
+# احساسات — (شناسه، مذکر، مؤنث یا None اگر یکسان، معنی فارسی)
+EMOTIONS = [
+    ("e01","Je suis content","Je suis contente","یعنی خوشحالم"),
+    ("e02","Je suis heureux","Je suis heureuse","یعنی خوشحال و خوشبختم"),
+    ("e03","Je suis amoureux","Je suis amoureuse","یعنی عاشقم"),
+    ("e04","Je suis malade",None,"یعنی مریضم و حالم خوب نیست"),
+    ("e05","Je suis fatigué","Je suis fatiguée","یعنی خسته‌ام"),
+    ("e06","Je suis rigolo","Je suis rigolote","یعنی بامزه و شوخم"),
+    ("e07","Je suis triste",None,"یعنی ناراحت و غمگینم"),
+    ("e08","Je suis inquiet","Je suis inquiète","یعنی نگرانم"),
+    ("e09","Je suis fâché","Je suis fâchée","یعنی عصبانی‌ام"),
+    ("e10","J'ai peur",None,"یعنی می‌ترسم"),
+]
+
+UNITS = {1:"un",2:"deux",3:"trois",4:"quatre",5:"cinq",6:"six",7:"sept",8:"huit",9:"neuf"}
+
+def swiss_number(i):
+    """متنِ عددِ سوئیسی برای خواندن. ۱ تا ۶۹ و ۱۰۰ را عدد خام می‌دهیم (یکسان است)."""
+    if i <= 69 or i == 100:
+        return str(i)
+    if 70 <= i <= 79:
+        rem = i - 70
+        return "septante" if rem == 0 else ("septante et un" if rem == 1 else f"septante-{UNITS[rem]}")
+    if 90 <= i <= 99:
+        rem = i - 90
+        return "nonante" if rem == 0 else ("nonante et un" if rem == 1 else f"nonante-{UNITS[rem]}")
+    # 80..89
+    rem = i - 80
+    if EIGHTY == "huitante":
+        return "huitante" if rem == 0 else ("huitante et un" if rem == 1 else f"huitante-{UNITS[rem]}")
+    else:  # quatre-vingts
+        return "quatre-vingts" if rem == 0 else f"quatre-vingt-{UNITS[rem]}"
+
 made = skipped = failed = 0
 
 async def tts(text, voice, path):
@@ -89,8 +128,16 @@ async def main():
     for wid, fr, _ in WORDS: await tts(fr, FR_VOICE, OUT/"fr"/f"{wid}.mp3")
     print("» کلمات (فارسی — معنی)…")
     for wid, _, fa in WORDS: await tts(fa, FA_VOICE, OUT/"fa"/f"{wid}.mp3")
-    print("» اعداد ۱ تا ۱۰۰ (فرانسوی)…")
-    for i in range(1, 101): await tts(str(i), FR_VOICE, OUT/"fr"/f"n{i:03d}.mp3")
+    print("» احساسات (فرانسوی مذکر/مؤنث + معنی فارسی)…")
+    for eid, m, f, fa in EMOTIONS:
+        if f is None:
+            await tts(m, FR_VOICE, OUT/"fr"/f"{eid}.mp3")
+        else:
+            await tts(m, FR_VOICE, OUT/"fr"/f"{eid}m.mp3")
+            await tts(f, FR_VOICE, OUT/"fr"/f"{eid}f.mp3")
+        await tts(fa, FA_VOICE, OUT/"fa"/f"{eid}.mp3")
+    print(f"» اعداد ۱ تا ۱۰۰ (سوئیسی، ۸۰ = {EIGHTY})…")
+    for i in range(1, 101): await tts(swiss_number(i), FR_VOICE, OUT/"fr"/f"n{i:03d}.mp3")
     print(f"\nساخته: {made} | رد(قبلاً بود): {skipped} | ناموفق: {failed}")
     print(f"خروجی: {OUT.resolve()}")
 
