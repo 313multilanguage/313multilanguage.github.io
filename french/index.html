@@ -68,6 +68,8 @@
   .btn:active{transform:scale(.94);}
   .btn.fr-btn{width:56px;background:linear-gradient(140deg,var(--bleu),var(--bleu2));color:#fff;}
   .btn.fr-btn svg{width:20px;height:20px;fill:#fff;}
+  .btn.fr-btn.emo{width:50px;}
+  .btn.fr-btn.emo span{font-size:1.35rem;line-height:1;}
   .btn.fa-btn{direction:rtl;background:#eef2fb;color:var(--bleu);border:1px solid #d8e1f4;}
   .btn.fa-btn svg{width:18px;height:18px;fill:var(--bleu);}
   .btn.playing{filter:brightness(1.1);box-shadow:0 0 0 3px rgba(27,79,184,.25);}
@@ -118,6 +120,9 @@
 
 <h2>Nombres 1 – 100 <span class="fa-label">اعداد ۱ تا ۱۰۰</span></h2>
 <div class="grid alpha" id="numbers"></div>
+
+<h2>Émotions <span class="fa-label">احساسات — چه حسی داری؟ 👩 زن · 👨 مرد</span></h2>
+<div class="words" id="emotions"></div>
 
 <footer>313 Multilanguage · Fait avec ❤</footer>
 
@@ -279,6 +284,59 @@
       numBox.appendChild(d);
     })(n);
   }
+
+  // ---- build: emotions ----
+  var emotions = [
+    {id:"e01", disp:"content / contente",     fa:"خوشحال",            g:true},
+    {id:"e02", disp:"heureux / heureuse",     fa:"خوشحال و خوشبخت",   g:true},
+    {id:"e03", disp:"amoureux / amoureuse",   fa:"عاشق",              g:true},
+    {id:"e04", disp:"malade",                 fa:"مریض",              g:false},
+    {id:"e05", disp:"fatigué / fatiguée",     fa:"خسته",              g:true},
+    {id:"e06", disp:"rigolo / rigolote",      fa:"بامزه / شوخ",       g:true},
+    {id:"e07", disp:"triste",                 fa:"ناراحت / غمگین",    g:false},
+    {id:"e08", disp:"inquiet / inquiète",     fa:"نگران",             g:true},
+    {id:"e09", disp:"fâché / fâchée",         fa:"عصبانی",            g:true},
+    {id:"e10", disp:"j'ai peur",              fa:"می‌ترسم",           g:false}
+  ];
+  var emoBox = document.getElementById("emotions");
+  emotions.forEach(function(e){
+    var row = document.createElement("div");
+    row.className = "word";
+    var left = document.createElement("span");
+    left.className = "left";
+    left.innerHTML = '<span class="fr">'+e.disp+'</span><span class="fa-m">'+e.fa+'</span>';
+    row.appendChild(left);
+
+    var faBtn = document.createElement("button");
+    faBtn.className = "btn fa-btn";
+    faBtn.innerHTML = earSvg + '<span>معنی</span>';
+    faBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fa/"+e.id+".mp3", faBtn); });
+    row.appendChild(faBtn);
+
+    if(e.g){
+      var wBtn = document.createElement("button");
+      wBtn.className = "btn fr-btn emo";
+      wBtn.setAttribute("aria-label","زن");
+      wBtn.innerHTML = '<span>👩</span>';
+      wBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+e.id+"f.mp3", wBtn); });
+      row.appendChild(wBtn);
+
+      var mBtn = document.createElement("button");
+      mBtn.className = "btn fr-btn emo";
+      mBtn.setAttribute("aria-label","مرد");
+      mBtn.innerHTML = '<span>👨</span>';
+      mBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+e.id+"m.mp3", mBtn); });
+      row.appendChild(mBtn);
+    } else {
+      var pBtn = document.createElement("button");
+      pBtn.className = "btn fr-btn";
+      pBtn.setAttribute("aria-label","تلفظ فرانسوی");
+      pBtn.innerHTML = playSvg;
+      pBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+e.id+".mp3", pBtn); });
+      row.appendChild(pBtn);
+    }
+    emoBox.appendChild(row);
+  });
 
   // ---- speed selector ----
   var speeds = document.getElementById("speeds");
