@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0b2a6b">
+<meta name="theme-color" content="#eef2fb">
+<meta name="color-scheme" content="light only">
 <title>Apprendre le français · یادگیری فرانسوی</title>
 <style>
   :root{
+    color-scheme: light only;
     --bleu:#0b2a6b; --bleu2:#1b4fb8; --rouge:#d7263d;
     --cream:#fbf7ef; --card:#ffffff; --ink:#132036; --muted:#6a7488;
     --ring:#1b4fb8; --ok:#1f9d6b;
@@ -366,18 +368,35 @@
 
   // ---- build: colors ----
   var colors = [
-    {id:"c01", fr:"rouge",  fa:"قرمز",     c:"#e53935"},
-    {id:"c02", fr:"orange", fa:"نارنجی",   c:"#fb8c00"},
-    {id:"c03", fr:"jaune",  fa:"زرد",      c:"#fdd835"},
-    {id:"c04", fr:"vert",   fa:"سبز",      c:"#43a047"},
-    {id:"c05", fr:"bleu",   fa:"آبی",      c:"#1e88e5"},
-    {id:"c06", fr:"violet", fa:"بنفش",     c:"#8e24aa"},
-    {id:"c07", fr:"rose",   fa:"صورتی",    c:"#ec407a"},
-    {id:"c08", fr:"marron", fa:"قهوه‌ای",  c:"#6d4c41"},
-    {id:"c09", fr:"gris",   fa:"خاکستری",  c:"#9e9e9e"},
-    {id:"c10", fr:"noir",   fa:"مشکی",     c:"#212121"},
-    {id:"c11", fr:"blanc",  fa:"سفید",     c:"#ffffff"},
-    {id:"c12", fr:"beige",  fa:"بژ",       c:"#d9c9a3"}
+    {id:"c01", fr:"rouge",         fa:"قرمز",          c:"#e53935"},
+    {id:"c13", fr:"rouge brique",  fa:"آجری",          c:"#a53a2a"},
+    {id:"c14", fr:"bordeaux",      fa:"زرشکی",         c:"#7b1e2b"},
+    {id:"c02", fr:"orange",        fa:"نارنجی",        c:"#fb8c00"},
+    {id:"c15", fr:"orange brûlé",  fa:"نارنجی سوخته",  c:"#d84315"},
+    {id:"c03", fr:"jaune",         fa:"زرد",           c:"#fdd835"},
+    {id:"c16", fr:"jaune moutarde",fa:"خردلی",         c:"#c9a227"},
+    {id:"c04", fr:"vert",          fa:"سبز",           c:"#43a047"},
+    {id:"c17", fr:"vert clair",    fa:"سبز روشن",      c:"#8bc34a"},
+    {id:"c18", fr:"vert foncé",    fa:"سبز تیره",      c:"#2e7d32"},
+    {id:"c19", fr:"vert olive",    fa:"زیتونی",        c:"#808000"},
+    {id:"c20", fr:"turquoise",     fa:"فیروزه‌ای",      c:"#26c6da"},
+    {id:"c05", fr:"bleu",          fa:"آبی",           c:"#1e88e5"},
+    {id:"c21", fr:"bleu clair",    fa:"آبی روشن",      c:"#64b5f6"},
+    {id:"c22", fr:"bleu foncé",    fa:"آبی تیره",      c:"#1a237e"},
+    {id:"c23", fr:"bleu marine",   fa:"سرمه‌ای",        c:"#0d1b4c"},
+    {id:"c06", fr:"violet",        fa:"بنفش",          c:"#8e24aa"},
+    {id:"c24", fr:"mauve",         fa:"یاسی",          c:"#b39ddb"},
+    {id:"c25", fr:"violet foncé",  fa:"بنفش تیره",     c:"#4527a0"},
+    {id:"c07", fr:"rose",          fa:"صورتی",         c:"#ec407a"},
+    {id:"c26", fr:"rose clair",    fa:"صورتی روشن",    c:"#f8bbd0"},
+    {id:"c27", fr:"magenta",       fa:"سرخابی",        c:"#c2185b"},
+    {id:"c28", fr:"saumon",        fa:"هلویی",         c:"#ffab91"},
+    {id:"c08", fr:"marron",        fa:"قهوه‌ای",        c:"#6d4c41"},
+    {id:"c12", fr:"beige",         fa:"بژ",            c:"#d9c9a3"},
+    {id:"c09", fr:"gris",          fa:"خاکستری",       c:"#9e9e9e"},
+    {id:"c29", fr:"gris clair",    fa:"خاکستری روشن",  c:"#cfd8dc"},
+    {id:"c10", fr:"noir",          fa:"مشکی",          c:"#212121"},
+    {id:"c11", fr:"blanc",         fa:"سفید",          c:"#ffffff"}
   ];
   var colBox = document.getElementById("colors");
   colors.forEach(function(c){
