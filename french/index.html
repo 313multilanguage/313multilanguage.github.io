@@ -78,6 +78,18 @@
   .btn.fa-btn svg{width:18px;height:18px;fill:var(--bleu);}
   .btn.playing{filter:brightness(1.1);box-shadow:0 0 0 3px rgba(27,79,184,.25);}
 
+  /* colors */
+  .colors{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));}
+  .color{background:var(--card);border:1px solid #e7ecf6;border-radius:14px;padding:8px;cursor:pointer;user-select:none;display:flex;align-items:center;gap:9px;box-shadow:0 2px 6px rgba(18,32,54,.05);transition:transform .08s,box-shadow .15s;}
+  .color:active{transform:scale(.96);}
+  .color.playing{border-color:var(--ring);box-shadow:0 0 0 3px rgba(27,79,184,.18);}
+  .swatch{width:34px;height:34px;border-radius:9px;flex:none;border:1px solid rgba(0,0,0,.14);}
+  .color .txt{min-width:0;display:flex;flex-direction:column;gap:1px;}
+  .color .cfr{font-weight:700;font-size:1.02rem;color:var(--ink);}
+  .color .cfa{direction:rtl;font-size:.82rem;color:var(--muted);}
+  .color .mini{margin-inline-start:auto;flex:none;width:34px;height:34px;border-radius:50%;background:#eef2fb;border:1px solid #d8e1f4;display:flex;align-items:center;justify-content:center;}
+  .color .mini svg{width:16px;height:16px;fill:var(--bleu);}
+
   .bar{
     position:fixed;left:0;right:0;bottom:0;z-index:30;
     background:rgba(255,255,255,.95);backdrop-filter:blur(8px);
@@ -127,6 +139,12 @@
 
 <h2>Émotions <span class="fa-label">احساسات — چه حسی داری؟ 👩 زن · 👨 مرد</span></h2>
 <div class="words" id="emotions"></div>
+
+<h2>Les couleurs <span class="fa-label">رنگ‌ها — فرانسوی و معنی فارسی</span></h2>
+<div class="colors" id="colors"></div>
+
+<h2>Les sons <span class="fa-label">حرف‌های ترکیبی — صدای هر کدام</span></h2>
+<div class="grid accents" id="sons"></div>
 
 <footer>313 Multilanguage · Fait avec ❤</footer>
 
@@ -350,6 +368,54 @@
       row.appendChild(pBtn);
     }
     emoBox.appendChild(row);
+  });
+
+  // ---- build: colors ----
+  var colors = [
+    {id:"c01", fr:"rouge",  fa:"قرمز",     c:"#e53935"},
+    {id:"c02", fr:"orange", fa:"نارنجی",   c:"#fb8c00"},
+    {id:"c03", fr:"jaune",  fa:"زرد",      c:"#fdd835"},
+    {id:"c04", fr:"vert",   fa:"سبز",      c:"#43a047"},
+    {id:"c05", fr:"bleu",   fa:"آبی",      c:"#1e88e5"},
+    {id:"c06", fr:"violet", fa:"بنفش",     c:"#8e24aa"},
+    {id:"c07", fr:"rose",   fa:"صورتی",    c:"#ec407a"},
+    {id:"c08", fr:"marron", fa:"قهوه‌ای",  c:"#6d4c41"},
+    {id:"c09", fr:"gris",   fa:"خاکستری",  c:"#9e9e9e"},
+    {id:"c10", fr:"noir",   fa:"مشکی",     c:"#212121"},
+    {id:"c11", fr:"blanc",  fa:"سفید",     c:"#ffffff"},
+    {id:"c12", fr:"beige",  fa:"بژ",       c:"#d9c9a3"}
+  ];
+  var colBox = document.getElementById("colors");
+  colors.forEach(function(c){
+    var d = document.createElement("div");
+    d.className = "color";
+    d.innerHTML = '<span class="swatch" style="background:'+c.c+'"></span>'
+      + '<span class="txt"><span class="cfr">'+c.fr+'</span><span class="cfa">'+c.fa+'</span></span>'
+      + '<span class="mini" aria-label="معنی">'+earSvg+'</span>';
+    d.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+c.id+".mp3", d); });
+    d.querySelector(".mini").addEventListener("click", function(ev){ ev.stopPropagation(); play(AUDIO_BASE+"/fa/"+c.id+".mp3", d); });
+    colBox.appendChild(d);
+  });
+
+  // ---- build: sons (graphèmes) ----
+  var sons = [
+    {id:"gr01", g:"ch",  ex:"chat"},    {id:"gr02", g:"ph",  ex:"photo"},
+    {id:"gr03", g:"gn",  ex:"montagne"},{id:"gr04", g:"ou",  ex:"loup"},
+    {id:"gr05", g:"oi",  ex:"roi"},     {id:"gr06", g:"au",  ex:"auto"},
+    {id:"gr07", g:"eau", ex:"eau"},     {id:"gr08", g:"eu",  ex:"feu"},
+    {id:"gr09", g:"ai",  ex:"maison"},  {id:"gr10", g:"ei",  ex:"neige"},
+    {id:"gr11", g:"an",  ex:"enfant"},  {id:"gr12", g:"en",  ex:"vent"},
+    {id:"gr13", g:"on",  ex:"mouton"},  {id:"gr14", g:"in",  ex:"lapin"},
+    {id:"gr15", g:"un",  ex:"brun"},    {id:"gr16", g:"ain", ex:"pain"},
+    {id:"gr17", g:"ill", ex:"fille"},   {id:"gr18", g:"qu",  ex:"qui"}
+  ];
+  var sonBox = document.getElementById("sons");
+  sons.forEach(function(s){
+    var d = document.createElement("div");
+    d.className = "tile";
+    d.innerHTML = '<span class="big">'+s.g+'</span><span class="say">'+s.ex+'</span>';
+    d.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+s.id+".mp3", d); });
+    sonBox.appendChild(d);
   });
 
   // ---- speed selector ----

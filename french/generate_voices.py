@@ -80,6 +80,30 @@ EMOTIONS = [
     ("e10","J'ai peur",None,"یعنی می‌ترسم"),
 ]
 
+# رنگ‌ها — (شناسه، فرانسوی، معنی فارسی)
+COLORS = [
+    ("c01","rouge","قرمز"),
+    ("c02","orange","نارنجی"),
+    ("c03","jaune","زرد"),
+    ("c04","vert","سبز"),
+    ("c05","bleu","آبی"),
+    ("c06","violet","بنفش"),
+    ("c07","rose","صورتی"),
+    ("c08","marron","قهوه‌ای"),
+    ("c09","gris","خاکستری"),
+    ("c10","noir","مشکی"),
+    ("c11","blanc","سفید"),
+    ("c12","beige","بژ"),
+]
+
+# حرف‌های ترکیبی (graphèmes) — (شناسه، صدایی که خوانده می‌شود)
+SONS = [
+    ("gr01","ch"),("gr02","ph"),("gr03","gn"),("gr04","ou"),("gr05","oi"),
+    ("gr06","au"),("gr07","eau"),("gr08","eu"),("gr09","ai"),("gr10","ei"),
+    ("gr11","an"),("gr12","en"),("gr13","on"),("gr14","in"),("gr15","un"),
+    ("gr16","ain"),("gr17","ill"),("gr18","qu"),
+]
+
 UNITS = {1:"un",2:"deux",3:"trois",4:"quatre",5:"cinq",6:"six",7:"sept",8:"huit",9:"neuf"}
 
 def swiss_number(i):
@@ -138,6 +162,12 @@ async def main():
         await tts(fa, FA_VOICE, OUT/"fa"/f"{eid}.mp3")
     print(f"» اعداد ۱ تا ۱۰۰ (سوئیسی، ۸۰ = {EIGHTY})…")
     for i in range(1, 101): await tts(swiss_number(i), FR_VOICE, OUT/"fr"/f"n{i:03d}.mp3")
+    print("» رنگ‌ها (فرانسوی + معنی فارسی)…")
+    for cid, fr, fa in COLORS:
+        await tts(fr, FR_VOICE, OUT/"fr"/f"{cid}.mp3")
+        await tts(fa, FA_VOICE, OUT/"fa"/f"{cid}.mp3")
+    print("» حرف‌های ترکیبی (صدای فرانسوی)…")
+    for gid, g in SONS: await tts(g, FR_VOICE, OUT/"fr"/f"{gid}.mp3")
     print(f"\nساخته: {made} | رد(قبلاً بود): {skipped} | ناموفق: {failed}")
     print(f"خروجی: {OUT.resolve()}")
 
