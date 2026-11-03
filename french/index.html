@@ -58,7 +58,9 @@
     padding:12px 14px;display:flex;align-items:center;gap:10px;
     box-shadow:0 2px 6px rgba(18,32,54,.05);
   }
-  .word .fr{flex:1;min-width:0;font-size:1.22rem;font-weight:700;color:var(--ink);}
+  .word .fr{min-width:0;font-size:1.22rem;font-weight:700;color:var(--ink);}
+  .word>.fr{flex:1;}
+  .word .fa-m{direction:rtl;font-size:.9rem;color:var(--muted);margin-top:2px;}
   .btn{
     flex:none;border:none;cursor:pointer;border-radius:14px;
     display:flex;align-items:center;justify-content:center;gap:6px;
@@ -78,17 +80,9 @@
   .btn.fa-btn svg{width:18px;height:18px;fill:var(--bleu);}
   .btn.playing{filter:brightness(1.1);box-shadow:0 0 0 3px rgba(27,79,184,.25);}
 
-  /* colors */
-  .colors{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));}
-  .color{background:var(--card);border:1px solid #e7ecf6;border-radius:14px;padding:8px;cursor:pointer;user-select:none;display:flex;align-items:center;gap:9px;box-shadow:0 2px 6px rgba(18,32,54,.05);transition:transform .08s,box-shadow .15s;}
-  .color:active{transform:scale(.96);}
-  .color.playing{border-color:var(--ring);box-shadow:0 0 0 3px rgba(27,79,184,.18);}
-  .swatch{width:34px;height:34px;border-radius:9px;flex:none;border:1px solid rgba(0,0,0,.14);}
-  .color .txt{min-width:0;display:flex;flex-direction:column;gap:1px;}
-  .color .cfr{font-weight:700;font-size:1.02rem;color:var(--ink);}
-  .color .cfa{direction:rtl;font-size:.82rem;color:var(--muted);}
-  .color .mini{margin-inline-start:auto;flex:none;width:34px;height:34px;border-radius:50%;background:#eef2fb;border:1px solid #d8e1f4;display:flex;align-items:center;justify-content:center;}
-  .color .mini svg{width:16px;height:16px;fill:var(--bleu);}
+  /* color swatch inside a row */
+  .swatch{width:40px;height:40px;border-radius:10px;flex:none;border:1px solid rgba(0,0,0,.14);}
+  .word .left{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
 
   .bar{
     position:fixed;left:0;right:0;bottom:0;z-index:30;
@@ -141,7 +135,7 @@
 <div class="words" id="emotions"></div>
 
 <h2>Les couleurs <span class="fa-label">رنگ‌ها — فرانسوی و معنی فارسی</span></h2>
-<div class="colors" id="colors"></div>
+<div class="words" id="colors"></div>
 
 <h2>Les sons <span class="fa-label">حرف‌های ترکیبی — صدای هر کدام</span></h2>
 <div class="grid accents" id="sons"></div>
@@ -387,14 +381,33 @@
   ];
   var colBox = document.getElementById("colors");
   colors.forEach(function(c){
-    var d = document.createElement("div");
-    d.className = "color";
-    d.innerHTML = '<span class="swatch" style="background:'+c.c+'"></span>'
-      + '<span class="txt"><span class="cfr">'+c.fr+'</span><span class="cfa">'+c.fa+'</span></span>'
-      + '<span class="mini" aria-label="معنی">'+earSvg+'</span>';
-    d.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+c.id+".mp3", d); });
-    d.querySelector(".mini").addEventListener("click", function(ev){ ev.stopPropagation(); play(AUDIO_BASE+"/fa/"+c.id+".mp3", d); });
-    colBox.appendChild(d);
+    var row = document.createElement("div");
+    row.className = "word";
+
+    var sw = document.createElement("span");
+    sw.className = "swatch";
+    sw.style.background = c.c;
+
+    var left = document.createElement("span");
+    left.className = "left";
+    left.innerHTML = '<span class="fr">'+c.fr+'</span><span class="fa-m">'+c.fa+'</span>';
+
+    var faBtn = document.createElement("button");
+    faBtn.className = "btn fa-btn";
+    faBtn.innerHTML = earSvg + '<span>معنی</span>';
+    faBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fa/"+c.id+".mp3", faBtn); });
+
+    var frBtn = document.createElement("button");
+    frBtn.className = "btn fr-btn";
+    frBtn.setAttribute("aria-label","تلفظ فرانسوی");
+    frBtn.innerHTML = playSvg;
+    frBtn.addEventListener("click", function(){ play(AUDIO_BASE+"/fr/"+c.id+".mp3", frBtn); });
+
+    row.appendChild(sw);
+    row.appendChild(left);
+    row.appendChild(faBtn);
+    row.appendChild(frBtn);
+    colBox.appendChild(row);
   });
 
   // ---- build: sons (graphèmes) ----
